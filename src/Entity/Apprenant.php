@@ -2,18 +2,21 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ApprenantRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=ApprenantRepository::class)
+ * @ApiResource()
  */
 class Apprenant extends User
 {
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="date", nullable=true)
      */
     private $date_naissance;
+
 
     public function getDateNaissance(): ?\DateTimeInterface
     {
@@ -26,4 +29,5 @@ class Apprenant extends User
 
         return $this;
     }
+
 }

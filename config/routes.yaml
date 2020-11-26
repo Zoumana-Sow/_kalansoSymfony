@@ -1,3 +1,18 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
+# connexion
+authentication_token:
+  path: /api/login
+  methods: ['POST']
+
+#creation user
+create_user:
+    path: /api/admin/users
+    controller: App\Controller\UserController::addUser
+    methods: [ 'POST' ]
+#edit user by id
+edit_apprenant:
+     path: /api/admin/users/{id}
+     controller: App\Controller\UserController::editUser
+     methods: [ 'PUT' ]
