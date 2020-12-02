@@ -1,11 +1,13 @@
 <?php
+
+
 namespace App\DataPersister;
 
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
-use App\Entity\User;
+use App\Entity\Tag;
 use Doctrine\ORM\EntityManagerInterface;
 
-final class UserPersister implements ContextAwareDataPersisterInterface
+final class TagsPersister implements ContextAwareDataPersisterInterface
 {
     private $manager;
     public function __construct(EntityManagerInterface $manager){
@@ -13,18 +15,18 @@ final class UserPersister implements ContextAwareDataPersisterInterface
     }
     public function supports($data, array $context = []): bool
     {
-        return $data instanceof User;
+        return $data instanceof Tag;
     }
 
     public function persist($data, array $context = [])
     {
-        // call your persistence layer to save $data
+        $this->manager->persist($data);
+        $this->manager->flush();
         return $data;
     }
 
     public function remove($data, array $context = [])
     {
-        $data->setarchivage(true);
-        $this->manager->flush();
+        // call your persistence layer to delete $data
     }
 }

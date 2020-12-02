@@ -21,12 +21,15 @@ final class ProfilPersister implements ContextAwareDataPersisterInterface
     {
         $this->manager->persist($data);
         $this->manager->flush();
-        return $data;
     }
 
     public function remove($data, array $context = [])
     {
         $data->setArchivage(true);
+        $user=$data->getUsers();
+        foreach ($user as $u){
+            $u->setarchivage(true);
+        }
         $this->manager->flush();
     }
 }
