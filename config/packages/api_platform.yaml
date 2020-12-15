@@ -8,3 +8,5 @@ api_platform:
     collection:
         pagination:
             items_per_page: 5 #Default value
+    eager_loading:
+        force_eager: false

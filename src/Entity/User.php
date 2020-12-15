@@ -41,6 +41,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      "edit_user"={
  *             "method"="PUT",
  *             "path" = "/admin/users/{id}",
+ *             "route_name"="edit_user",
  *      },
  *     "delete"={
  *     "methode"="DELETE",
@@ -59,6 +60,7 @@ class User implements UserInterface
      * @Groups({"user:read"})
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"grp:read","grp:write"})
      */
     private $id;
 

@@ -12,20 +12,5 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class CM extends User
 {
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $archivage;
 
-    public function getArchivage(): ?bool
-    {
-        return $this->archivage;
-    }
-
-    public function setArchivage(bool $archivage): self
-    {
-        $this->archivage = $archivage;
-
-        return $this;
-    }
 }

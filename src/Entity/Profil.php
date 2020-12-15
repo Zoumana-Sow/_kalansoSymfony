@@ -15,7 +15,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ProfilRepository::class)
- * @UniqueEntity("libelle")
+ * @UniqueEntity(
+ *     fields = {"libelle"},
+ *     message = "Ce libelle est déjà utilisé!")
  * @ApiResource(
  *      attributes={
  *      "security" = "is_granted('ROLE_Admin')",
@@ -39,7 +41,7 @@ class Profil
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"profil:read","user:read"})
+     * @Groups({"profil:read","user:read","grp:read","grp:write"})
      */
     private $libelle;
 

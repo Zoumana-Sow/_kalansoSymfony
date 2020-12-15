@@ -2,13 +2,57 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Repository\GroupeTagRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=GroupeTagRepository::class)
+ * @ApiResource(
+ * attributes={
+ *      "security" = "(is_granted('ROLE_Admin') or is_granted('ROLE_Formateur'))",
+ *      "security_message" = "vous n'avez pas accès a cette resource"
+ *   },
+ *
+ * subresourceOperations={
+ *     "tags_get_subresource"={
+ *          "method" = "GET",
+ *          "path"  = "/admin/grptags/{id}/tags",
+ *          "normalization_context"={"groups"={"gpetags:read"}}
+ *      },
+ *
+ * },
+ *  collectionOperations={
+ *      "get_grpe_tags"={
+ *          "normalization_context"={"groups"={"grpeTags:read"}},
+ *          "method" = "GET",
+ *          "path" = "/admin/grptags"
+ *  },
+ *
+ *  "create_grpe_tags"={
+ *     "method" = "POST",
+ *      "route_name" = "create_grpe_tags",
+ *      "path" = "/admin/grptags"
+ *   }
+ * },
+ *
+ * itemOperations={
+ *      "get_one_grpe_tags"={
+ *          "normalization_context"={"groups"={"grpeTags:read"}},
+ *          "method" = "GET",
+ *          "path"  = "/admin/grptags/{id}"
+ *      },
+ *
+ *      "edit_tags"={
+ *          "method" = "PUT",
+ *          "path"  = "/admin/grptags/{id}"
+ *      }
+ * }
+ * )
  */
 class GroupeTag
 {
@@ -21,16 +65,19 @@ class GroupeTag
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"gpetags:read"})
      */
     private $descriptif;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"gpetags:read"})
      */
     private $libelle;
 
     /**
      * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="groupeTags")
+     * @ApiSubresource
      */
     private $tag;
 

@@ -12,7 +12,53 @@ create_user:
     controller: App\Controller\UserController::addUser
     methods: [ 'POST' ]
 #edit user by id
-edit_apprenant:
+edit_user:
      path: /api/admin/users/{id}
      controller: App\Controller\UserController::editUser
      methods: [ 'PUT' ]
+#liste des apprenants par le formateur et le CM
+list_apprenant:
+  path: /api/apprenants
+  controller: App\Controller\UserController::showApprenants
+  methods: ['GET']
+#liste des formateurs par le CM
+list_formateur_cm:
+  path: /api/formateurs
+  controller: App\Controller\UserController::showFormateurs
+  methods: ['GET']
+
+#liste d'un apprenant by id
+show_apprenant:
+  path: /api/apprenant/{id}
+  controller: App\Controller\UserController::findApprenantsById
+  methods: ['GET']
+
+#liste d'un formateur by id
+show_formateur:
+  path: /api/formateur/{id}
+  controller: App\Controller\UserController::findFormateursById
+  methods: ['GET']
+
+#edit d'un apprenant by id
+edit_apprenant:
+  path: /api/apprenants/{id}
+  controller: App\Controller\UserController::editApprenant
+  methods: ['PUT']
+
+#edit d'un Formateur by id
+edit_formateur:
+  path: /api/formateur/{id}
+  controller: App\Controller\UserController::editFormateur
+  methods: ['PUT']
+
+#creation groupe tags
+create_grpe_tags:
+  path: /api/admin/grptags
+  controller: App\Controller\GroupeTagsController::AddGrpeTags
+  methods: ['POST']
+
+#create tags
+create_tags:
+  path: /api/admin/tags
+
+
