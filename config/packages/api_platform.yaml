@@ -10,3 +10,12 @@ api_platform:
             items_per_page: 5 #Default value
     eager_loading:
         force_eager: false
+    formats:
+        json:    ['application/json']
+        jsonld:  ['application/ld+json']
+        jsonhal: ['application/hal+json']
+        jsonapi: ['application/vnd.api+json']
+        xml:     ['application/xml' , 'test/xml']
+        yaml:    ['application/x-yaml']
+        csv:     ['text/csv']
+        html:    ['text/html']

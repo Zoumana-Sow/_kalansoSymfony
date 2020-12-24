@@ -36,7 +36,7 @@ class UserController extends AbstractController
     public function addUser(Request $request, SerializerInterface $serializer, UserPasswordEncoderInterface $encoder)
     {
         $user = $request->request->all();
-        $avatar = $request->files->get("avatar");
+        $uploadfile = $request->files->get("avatar");
         $manager=$this->getDoctrine()->getManager();
         $profil=$manager->getRepository(Profil::class)->findOneBy(['libelle' => $user['profils']]);
         //Savoir quel user on va inseré
@@ -49,7 +49,8 @@ class UserController extends AbstractController
         }else{
             $user = $serializer->denormalize($user,"App\Entity\User",true);
         }
-        $avatar = fopen($avatar->getRealPath(),"rb");
+        $file = $uploadfile->getRealPath();
+        $avatar = fopen($file,'r+');
         $user->setAvatar($avatar);
         $password = $user->getPassword();
         $user->setPassword($encoder->encodePassword($user,$password));
@@ -78,10 +79,11 @@ class UserController extends AbstractController
                 //
             }
         }
-        $avatar=$request->files->get("avatar");
-        if($avatar)
+        $uploadfile = $request->files->get("avatar");
+        if($uploadfile)
         {
-            $avatar = fopen($avatar->getRealPath(),"rb");
+            $file = $uploadfile ->getRealPath();
+            $avatar = fopen($file,"r+");
             $user->setAvatar($avatar);
         }
         $this->em->persist($user);

@@ -117,7 +117,7 @@ class User implements UserInterface
     private $profil;
 
     /**
-     * @ORM\Column(type="blob", nullable=true)
+     * @ORM\Column(type="blob")
      */
     private $avatar;
 
