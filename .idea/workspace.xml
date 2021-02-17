@@ -20,11 +20,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="131536ca-2553-47bb-a993-943c66e9616a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/mise_a_niveau.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/mise_a_niveau.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/packages/api_platform.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/api_platform.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/routes.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/routes.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UserController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/User.php" afterDir="false" />
     </list>
@@ -156,6 +155,12 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../liveSA" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="MTConfigurable" />
     <property name="vue.rearranger.settings.migration" value="true" />
@@ -183,6 +188,16 @@
       <workItem from="1608316637292" duration="599000" />
       <workItem from="1608515146271" duration="6668000" />
       <workItem from="1608552205672" duration="920000" />
+      <workItem from="1609753536614" duration="4158000" />
+      <workItem from="1609805862812" duration="6701000" />
+      <workItem from="1609888082479" duration="1681000" />
+      <workItem from="1609961123434" duration="1897000" />
+      <workItem from="1610034039274" duration="4708000" />
+      <workItem from="1611781336377" duration="74000" />
+      <workItem from="1613270298482" duration="10112000" />
+      <workItem from="1613348517782" duration="4189000" />
+      <workItem from="1613496913010" duration="6681000" />
+      <workItem from="1613505913541" duration="3602000" />
     </task>
     <servers />
   </component>

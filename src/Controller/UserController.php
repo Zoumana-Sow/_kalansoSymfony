@@ -40,6 +40,7 @@ class UserController extends AbstractController
         $manager=$this->getDoctrine()->getManager();
         $profil=$manager->getRepository(Profil::class)->findOneBy(['libelle' => $user['profils']]);
         //Savoir quel user on va inseré
+       // return $this->json($user);
         if ($user['profils'] == "Apprenant") {
             $user = $serializer->denormalize($user,Apprenant::class,true);
         }elseif ($user['profils'] == "Formateur") {
@@ -58,7 +59,7 @@ class UserController extends AbstractController
         $this->em->persist($user);
         $this->em->flush();
         fclose($avatar);
-        return $this->json("success",201);
+        return $this->json("success 2",201);
     }
     //edit user
     public function editUser(Request $request,int $id)
@@ -69,16 +70,19 @@ class UserController extends AbstractController
             return $this->json('Vous n avez pas accès à cette ressource',400);
         }
 
-       $data = $request->request->all();
-
+        $data = $request->request->all();
+        // return $this->json($data, 400);
+        $test=[];
         foreach($data as $key => $d)
         {
-            if($key!=="_method")
+            if($key!== "id" && $key !== "profil" && $key!== "groupes")// je ne comprends plus cest a cause de l'id que ça cale
             {
                 $user->{"set".ucfirst($key)}($d);
                 //
             }
         }
+
+        //return $this->json($test, 400);
         $uploadfile = $request->files->get("avatar");
         if($uploadfile)
         {
@@ -86,139 +90,140 @@ class UserController extends AbstractController
             $avatar = fopen($file,"r+");
             $user->setAvatar($avatar);
         }
+        $user->setArchivage(false);
         $this->em->persist($user);
         $this->em->flush();
-        return $this->json("success",201);
+        return $this->json("success 3",201);
 
     }
-    //Liste des apprenants
-    public function showApprenants(UserRepository $repo)
-    {
-        if($this->isGranted('ROLE_Formateur') || $this->isGranted('ROLE_Admin')  || $this->isGranted('ROLE_CM')){
-            $apprenants = $repo->findByProfil("Apprenant");
-            return $this->json($apprenants,200,[],['groups'=>'user:read']);
-        }else{
-            return $this->json("vous n'avez pas accès a cette resource ",403);
-        }
-    }
-    //liste des formateurs
-    public function showFormateurs(UserRepository $repo)
-    {
-        if($this->isGranted('ROLE_Admin')  || $this->isGranted('ROLE_CM')){
-            $formateurs = $repo->findByProfil("Formateur");
-            return $this->json($formateurs,200,[],['groups'=>'user:read']);
-        }else{
-            return $this->json("vous n'avez pas accès a cette resource ",403);
-        }
-    }
-    //get one apprenant by id
-    public function findApprenantsById(UserRepository $repo,$id)
-    {
-        if($this->isGranted('ROLE_Admin') || $this->isGranted('ROLE_Formateur') || $this->isGranted('ROLE_CM')){
-            $apprenants = $repo->findOneById('Apprenant', $id);
-            if ($apprenants) {
-                return $this->json($apprenants,Response::HTTP_OK,[],['groups'=>"apprenant:read"]);
-            }else{
-                return $this->json("user n'est pas un apprenant");
-            }
-        }else {
-            $apprenants = $repo->findOneById('Apprenant', $id);
-
-            $user=$this->security->getUser();
-            if (!$apprenants)
-            { return $this->json("vous n'avez pas accès a cette resource ",403); }
-
-            if ( $this->isGranted('ROLE_Apprenant') && $apprenants->getId()==$user->getId() ) {
-                return $this->json($apprenants,Response::HTTP_OK,[],['groups'=>"student:read"]);
-            }else {
-                return $this->json("vous n'avez pas accès a cette resource ",403);
-            }
-
-        }
-    }
-    //get one formateur by id
-    public function findFormateursById(UserRepository $repo,$id)
-    {
-        if($this->isGranted('ROLE_CM') || $this->isGranted('ROLE_Admin')){
-            $formateurs = $repo->findOneById('Formateur', $id);
-            if ($formateurs) {
-                return $this->json($formateurs,Response::HTTP_OK,[],['groups'=>'user:read']);
-            }else{
-                return $this->json("user n'est pas un formateur");
-            }
-        }
-
-        else {
-            $formateurs = $repo->findOneById('Formateur', $id);
-            $user=$this->security->getUser();
-            if ($formateurs==null)
-            { return $this->json("vous n'avez pas accès a cette resource ",403); }
-
-            if ( $this->isGranted('ROLE_Formateur') && $user->getId()==$formateurs->getId() ) {
-                return $this->json($formateurs,Response::HTTP_OK,[],['groups'=>'user:read']);
-            }
-            else {
-                return $this->json("vous n'avez pas accès a cette resource ",403);
-            }
-        }
-    }
-    //edit apprenant by id
-    public function editApprenant(UserRepository $repo,$id,Request $request, EntityManagerInterface $em, ValidatorInterface $validator)
-    {
-        $apprenantObject = $repo->findOneById('Apprenant', $id);
-        if($apprenantObject==null ) {
-            return $this->json("vous n'avez pas accès a cette ressource ",403);
-        }
-        $user=$this->security->getUser();
-        if($this->isGranted('ROLE_Formateur') || $this->isGranted('ROLE_Admin') || ($this->isGranted('ROLE_Apprenant') && $user->getId()==$apprenantObject->getId()) ){
-            $jsonApprenant  = json_decode($request->getContent());
-
-            $apprenantObject->setLastname($jsonApprenant->nom);
-            $apprenantObject->setFirstname($jsonApprenant->prenom);
-
-            if($apprenantObject){
-                $erreurs = $validator->validate($apprenantObject);
-                if (count($erreurs)>0) {
-                    return $this->json('invalide',Response::HTTP_BAD_REQUEST);
-                }
-                $em->flush();
-                return $this->json('success',Response::HTTP_OK);
-            }else{
-                return $this->json("user n'est pas un apprenant");
-            }
-        }else{
-            return $this->json("vous n'avez pas accès a cette resource ",403);
-        }
-    }
-    //edit formateur by id
-    public function editFormateur(UserRepository $repo,$id,Request $request, EntityManagerInterface $em, ValidatorInterface $validator)
-    {
-        $formateurObject = $repo->findOneById('FORMATEUR', $id);
-        if($formateurObject==null ) {
-            return $this->json("vous n'avez pas accès a cette resource ",403);
-        }
-        $user=$this->security->getUser();
-        if( ($this->isGranted('ROLE_FORMATEUR') && $user->getId()==$formateurObject->getId())  || $this->isGranted('ROLE_ADMIN') ){
-
-            $jsonFormateur  = json_decode($request->getContent());
-
-            $formateurObject->setNom($jsonFormateur->nom);
-            $formateurObject->setPrenom($jsonFormateur->prenom);
-            $formateurObject->setEmail($jsonFormateur->email);
-
-            if($formateurObject){
-                $erreurs = $validator->validate($formateurObject);
-                if (count($erreurs)>0) {
-                    return $this->json('invalide',Response::HTTP_BAD_REQUEST);
-                }
-                $em->flush();
-                return $this->json('success',Response::HTTP_OK);
-            }else{
-                return $this->json("user n'est pas un apprenant");
-            }
-        }else{
-
-            return $this->json("vous n'avez pas accès a cette resource ",403);
-        }
-    }
+//    //Liste des apprenants
+//    public function showApprenants(UserRepository $repo)
+//    {
+//        if($this->isGranted('ROLE_Formateur') || $this->isGranted('ROLE_Admin')  || $this->isGranted('ROLE_CM')){
+//            $apprenants = $repo->findByProfil("Apprenant");
+//            return $this->json($apprenants,200,[],['groups'=>'user:read']);
+//        }else{
+//            return $this->json("vous n'avez pas accès a cette resource ",403);
+//        }
+//    }
+//    //liste des formateurs
+//    public function showFormateurs(UserRepository $repo)
+//    {
+//        if($this->isGranted('ROLE_Admin')  || $this->isGranted('ROLE_CM')){
+//            $formateurs = $repo->findByProfil("Formateur");
+//            return $this->json($formateurs,200,[],['groups'=>'user:read']);
+//        }else{
+//            return $this->json("vous n'avez pas accès a cette resource ",403);
+//        }
+//    }
+//    //get one apprenant by id
+//    public function findApprenantsById(UserRepository $repo,$id)
+//    {
+//        if($this->isGranted('ROLE_Admin') || $this->isGranted('ROLE_Formateur') || $this->isGranted('ROLE_CM')){
+//            $apprenants = $repo->findOneById('Apprenant', $id);
+//            if ($apprenants) {
+//                return $this->json($apprenants,Response::HTTP_OK,[],['groups'=>"apprenant:read"]);
+//            }else{
+//                return $this->json("user n'est pas un apprenant");
+//            }
+//        }else {
+//            $apprenants = $repo->findOneById('Apprenant', $id);
+//
+//            $user=$this->security->getUser();
+//            if (!$apprenants)
+//            { return $this->json("vous n'avez pas accès a cette resource ",403); }
+//
+//            if ( $this->isGranted('ROLE_Apprenant') && $apprenants->getId()==$user->getId() ) {
+//                return $this->json($apprenants,Response::HTTP_OK,[],['groups'=>"student:read"]);
+//            }else {
+//                return $this->json("vous n'avez pas accès a cette resource ",403);
+//            }
+//
+//        }
+//    }
+//    //get one formateur by id
+//    public function findFormateursById(UserRepository $repo,$id)
+//    {
+//        if($this->isGranted('ROLE_CM') || $this->isGranted('ROLE_Admin')){
+//            $formateurs = $repo->findOneById('Formateur', $id);
+//            if ($formateurs) {
+//                return $this->json($formateurs,Response::HTTP_OK,[],['groups'=>'user:read']);
+//            }else{
+//                return $this->json("user n'est pas un formateur");
+//            }
+//        }
+//
+//        else {
+//            $formateurs = $repo->findOneById('Formateur', $id);
+//            $user=$this->security->getUser();
+//            if ($formateurs==null)
+//            { return $this->json("vous n'avez pas accès a cette resource ",403); }
+//
+//            if ( $this->isGranted('ROLE_Formateur') && $user->getId()==$formateurs->getId() ) {
+//                return $this->json($formateurs,Response::HTTP_OK,[],['groups'=>'user:read']);
+//            }
+//            else {
+//                return $this->json("vous n'avez pas accès a cette resource ",403);
+//            }
+//        }
+//    }
+//    //edit apprenant by id
+//    public function editApprenant(UserRepository $repo,$id,Request $request, EntityManagerInterface $em, ValidatorInterface $validator)
+//    {
+//        $apprenantObject = $repo->findOneById('Apprenant', $id);
+//        if($apprenantObject==null ) {
+//            return $this->json("vous n'avez pas accès a cette ressource ",403);
+//        }
+//        $user=$this->security->getUser();
+//        if($this->isGranted('ROLE_Formateur') || $this->isGranted('ROLE_Admin') || ($this->isGranted('ROLE_Apprenant') && $user->getId()==$apprenantObject->getId()) ){
+//            $jsonApprenant  = json_decode($request->getContent());
+//
+//            $apprenantObject->setLastname($jsonApprenant->nom);
+//            $apprenantObject->setFirstname($jsonApprenant->prenom);
+//
+//            if($apprenantObject){
+//                $erreurs = $validator->validate($apprenantObject);
+//                if (count($erreurs)>0) {
+//                    return $this->json('invalide',Response::HTTP_BAD_REQUEST);
+//                }
+//                $em->flush();
+//                return $this->json('success 4',Response::HTTP_OK);
+//            }else{
+//                return $this->json("user n'est pas un apprenant");
+//            }
+//        }else{
+//            return $this->json("vous n'avez pas accès a cette resource ",403);
+//        }
+//    }
+//    //edit formateur by id
+//    public function editFormateur(UserRepository $repo,$id,Request $request, EntityManagerInterface $em, ValidatorInterface $validator)
+//    {
+//        $formateurObject = $repo->findOneById('FORMATEUR', $id);
+//        if($formateurObject==null ) {
+//            return $this->json("vous n'avez pas accès a cette resource ",403);
+//        }
+//        $user=$this->security->getUser();
+//        if( ($this->isGranted('ROLE_FORMATEUR') && $user->getId()==$formateurObject->getId())  || $this->isGranted('ROLE_ADMIN') ){
+//
+//            $jsonFormateur  = json_decode($request->getContent());
+//
+//            $formateurObject->setNom($jsonFormateur->nom);
+//            $formateurObject->setPrenom($jsonFormateur->prenom);
+//            $formateurObject->setEmail($jsonFormateur->email);
+//
+//            if($formateurObject){
+//                $erreurs = $validator->validate($formateurObject);
+//                if (count($erreurs)>0) {
+//                    return $this->json('invalide',Response::HTTP_BAD_REQUEST);
+//                }
+//                $em->flush();
+//                return $this->json('success 5',Response::HTTP_OK);
+//            }else{
+//                return $this->json("user n'est pas un apprenant");
+//            }
+//        }else{
+//
+//            return $this->json("vous n'avez pas accès a cette resource ",403);
+//        }
+//    }
 }

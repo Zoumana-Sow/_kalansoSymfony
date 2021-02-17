@@ -84,7 +84,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="veuillez entrer votre prenom")
-     * @Groups({"user":"read","profil:read"})
+     * @Groups({"user:read","profil:read"})
      */
     private $firstname;
 
@@ -118,6 +118,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="blob")
+     * @Groups ({"user:read"})
      */
     private $avatar;
 
@@ -267,11 +268,14 @@ class User implements UserInterface
 
     public function getAvatar()
     {
-        return $this->avatar;
+        if($this->avatar){
+            return base64_encode(stream_get_contents($this->avatar));
+        }
     }
 
     public function setAvatar($avatar): self
     {
+
         $this->avatar = $avatar;
 
         return $this;

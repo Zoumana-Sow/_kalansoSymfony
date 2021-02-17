@@ -15,7 +15,7 @@ create_user:
 edit_user:
      path: /api/admin/users/{id}
      controller: App\Controller\UserController::editUser
-     methods: [ 'PUT' ]
+     methods: [ 'POST' ]
 #liste des apprenants par le formateur et le CM
 list_apprenant:
   path: /api/apprenants
